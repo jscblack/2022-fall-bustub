@@ -2,12 +2,33 @@
  * extendible_hash_test.cpp
  */
 
-#include <memory>
-#include <thread>  // NOLINT
-
+// #include <chrono>
 #include "container/hash/extendible_hash_table.h"
-#include "gtest/gtest.h"
 
+#include <memory>
+#include <random>
+#include <thread>  // NOLINT
+#include <unordered_map>
+
+#include "gtest/gtest.h"
+// // Generate n random strings
+// std::vector<std::string> GenerateNRandomString(int n) {
+//   std::random_device rd;
+//   std::mt19937 gen(rd());
+//   std::uniform_int_distribution<char> char_dist('A', 'z');
+//   std::uniform_int_distribution<int> len_dist(1, 30);
+
+//   std::vector<std::string> rand_strs(n);
+
+//   for (auto &rand_str : rand_strs) {
+//     int str_len = len_dist(gen);
+//     for (int i = 0; i < str_len; ++i) {
+//       rand_str.push_back(char_dist(gen));
+//     }
+//   }
+
+//   return rand_strs;
+// }
 namespace bustub {
 
 TEST(ExtendibleHashTableTest, SampleTest) {
@@ -68,4 +89,26 @@ TEST(ExtendibleHashTableTest, ConcurrentInsertTest) {
   }
 }
 
+// TEST(ExtendibleHashTableTest, DISABLED_SpeedTest) {
+//   auto table = std::make_unique<ExtendibleHashTable<int, std::string>>(100);
+//   std::unordered_map<int, std::string> stl_table;
+//   int tot = 1e4;
+//   std::vector<std::pair<int, std::string>> ve;
+//   auto ret = GenerateNRandomString(tot);
+//   for (int i = 0; i < tot; i++) {
+//     ve.push_back({rand(), ret.at(i)});
+//   }
+//   typedef std::chrono::high_resolution_clock Clock;
+//   auto t1 = Clock::now();
+//   for (const auto &pr : ve) {
+//     table->Insert(pr.first, pr.second);
+//     // stl_table.insert({pr.first, pr.second});
+//   }
+//   auto t2 = Clock::now();
+//   std::chrono::nanoseconds t21 = t2 - t1;
+//   std::cout
+//       << "time taken: "
+//       << std::chrono::duration_cast<std::chrono::microseconds>(t21).count()
+//       << " microseconds" << std::endl;
+// }
 }  // namespace bustub
