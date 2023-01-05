@@ -24,6 +24,7 @@ class IndexIterator {
  public:
   // you may define your own constructor based on your member variables
   IndexIterator();
+  IndexIterator(B_PLUS_TREE_LEAF_PAGE_TYPE *leaf, int index, BufferPoolManager *buffer_pool_manager);
   ~IndexIterator();  // NOLINT
 
   auto IsEnd() -> bool;
@@ -32,12 +33,25 @@ class IndexIterator {
 
   auto operator++() -> IndexIterator &;
 
-  auto operator==(const IndexIterator &itr) const -> bool { throw std::runtime_error("unimplemented"); }
+  auto operator==(const IndexIterator &itr) const -> bool {
+    if (leaf_page_ptr_ == nullptr || itr.leaf_page_ptr_ == nullptr) {
+      return leaf_page_ptr_ == itr.leaf_page_ptr_;
+    }
+    return leaf_page_ptr_->GetPageId() == itr.leaf_page_ptr_->GetPageId() && index_ == itr.index_;
+  }
 
-  auto operator!=(const IndexIterator &itr) const -> bool { throw std::runtime_error("unimplemented"); }
+  auto operator!=(const IndexIterator &itr) const -> bool {
+    if (leaf_page_ptr_ == nullptr || itr.leaf_page_ptr_ == nullptr) {
+      return leaf_page_ptr_ != itr.leaf_page_ptr_;
+    }
+    return leaf_page_ptr_->GetPageId() != itr.leaf_page_ptr_->GetPageId() || index_ != itr.index_;
+  }
 
  private:
   // add your own private member variables here
+  B_PLUS_TREE_LEAF_PAGE_TYPE *leaf_page_ptr_;
+  int index_;
+  BufferPoolManager *buffer_pool_manager_;
 };
 
 }  // namespace bustub

@@ -11,7 +11,7 @@
 #pragma once
 
 #include <queue>
-
+#include <utility>
 #include "storage/page/b_plus_tree_page.h"
 
 namespace bustub {
@@ -41,8 +41,25 @@ class BPlusTreeInternalPage : public BPlusTreePage {
   auto KeyAt(int index) const -> KeyType;
   void SetKeyAt(int index, const KeyType &key);
   auto ValueAt(int index) const -> ValueType;
+  void SetValueAt(int index, const ValueType &value);
+  void ReplaceKey(const ValueType &before_val, const KeyType &after_key, const KeyComparator &comparator);
+  void ReplaceKey(const KeyType &before_key, const KeyType &after_key, const KeyComparator &comparator);
+
+  auto GetValue(const KeyType &key, const KeyComparator &comparator) const -> ValueType;
+  auto InsertKey(const KeyType &key, const ValueType &l_value, const ValueType &r_value,
+                 const KeyComparator &comparator) -> bool;
+  auto InsertKeyAndSplitTwo(const KeyType &key, const ValueType &l_value, const ValueType &r_value,
+                            const KeyComparator &comparator, BPlusTreeInternalPage &new_internal_page) -> KeyType;
+  auto GetSibling(const ValueType &value) const -> std::pair<page_id_t, page_id_t>;
+  auto RemoveValue(const ValueType &value) -> bool;
+  auto StealFromLeftAndUpdateParent(BPlusTreeInternalPage &left_page, BPlusTreeInternalPage &parent_page) -> page_id_t;
+  auto StealFromRightAndUpdateParent(BPlusTreeInternalPage &right_page, BPlusTreeInternalPage &parent_page)
+      -> page_id_t;
+  auto MergeInternalPage(BPlusTreeInternalPage &tb_merged_page, BPlusTreeInternalPage &parent_page) -> page_id_t;
 
  private:
+  auto InsertKeyIgnoreFirst(const KeyType &key, const ValueType &l_value, const ValueType &r_value,
+                            const KeyComparator &comparator) -> bool;
   // Flexible array member for page data.
   MappingType array_[1];
 };

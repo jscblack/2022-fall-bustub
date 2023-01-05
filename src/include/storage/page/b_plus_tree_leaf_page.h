@@ -49,6 +49,19 @@ class BPlusTreeLeafPage : public BPlusTreePage {
   auto GetNextPageId() const -> page_id_t;
   void SetNextPageId(page_id_t next_page_id);
   auto KeyAt(int index) const -> KeyType;
+  auto ValueAt(int index) const -> ValueType;
+  auto HasKey(const KeyType &key, const KeyComparator &comparator) const -> bool;
+  auto GetKeyIndex(const KeyType &key, const KeyComparator &comparator) const -> int;
+  auto GetElem(int index) -> const MappingType &;
+
+  auto GetValue(const KeyType &key, const KeyComparator &comparator, ValueType &result) const -> bool;
+  auto InsertValue(const KeyType &key, const ValueType &value, const KeyComparator &comparator) -> bool;
+  auto InsertValueAndSplitTwo(const KeyType &key, const ValueType &value, const KeyComparator &comparator,
+                              BPlusTreeLeafPage &new_leaf_page) -> KeyType;
+  auto RemoveValue(const KeyType &key, const KeyComparator &comparator) -> bool;
+  auto StealFromLeft(BPlusTreeLeafPage &left_page) -> std::pair<page_id_t, KeyType>;
+  auto StealFromRight(BPlusTreeLeafPage &right_page) -> std::pair<page_id_t, KeyType>;
+  auto MergeLeafPage(BPlusTreeLeafPage &tb_merged_page) -> page_id_t;
 
  private:
   page_id_t next_page_id_;

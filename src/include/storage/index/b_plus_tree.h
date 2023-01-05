@@ -12,6 +12,7 @@
 
 #include <queue>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "concurrency/transaction.h"
@@ -76,6 +77,26 @@ class BPlusTree {
 
  private:
   void UpdateRootPageId(int insert_record = 0);
+
+  // return the page id of the target leaf page
+  auto GetLeafPageId(const KeyType &key) -> page_id_t;
+
+  auto GetStartPageId() -> page_id_t;
+
+  auto GetSiblingPageId(const page_id_t &page_id) const -> std::pair<page_id_t, page_id_t>;
+
+  // split the internal page recurrsively
+  void InsertToInternalPageRecur(const KeyType &key, const page_id_t &l_value, const page_id_t &r_value,
+                                 const page_id_t &internal_page_id);
+
+  // try to steal a key from the left/right sibling leaf page
+  // success return true
+  auto StealFromSiblingLeafPage(const page_id_t &leaf_page_id) -> bool;
+
+  // remove the page/key pair from the internal page recurrsively
+  void DeleteFromInternalPageRecur(const page_id_t &removed_page_id, page_id_t internal_page_id);
+
+  auto StealFromSiblingInternalPage(const page_id_t &internal_page_id) -> bool;
 
   /* Debug Routines for FREE!! */
   void ToGraph(BPlusTreePage *page, BufferPoolManager *bpm, std::ofstream &out) const;
